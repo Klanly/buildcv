@@ -1,0 +1,126 @@
+name: OpenCv
+
+on:
+  workflow_dispatch:
+    inputs:
+      opencv-version:
+        description: The version of OpenCV
+        required: true
+        default: 4.5.2
+
+jobs:
+  opencv:
+    strategy:
+      matrix:
+        include:
+          - name: windows_amd64
+            os: windows-latest
+
+    name: "OpenCV ${{ matrix.name }}"
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
+
+    env:
+      VERSION: ${{ github.event.inputs.opencv-version }}
+      SRC: ${{ github.workspace }}/opencv
+      BUILD: ${{ github.workspace }}/build
+      CONFIGURE: >-
+        -D CMAKE_BUILD_TYPE=Release
+        -D CMAKE_INSTALL_PREFIX=install
+        -D BUILD_SHARED_LIBS=ON
+        -D ENABLE_CXX11=1
+        -D INSTALL_C_EXAMPLES=OFF
+        -D INSTALL_PYTHON_EXAMPLES=OFF
+        -D OPENCV_ENABLE_NONFREE=OFF
+        -D BUILD_ANDROID_PROJECTS=OFF
+        -D BUILD_ANDROID_EXAMPLES=OFF
+        -D BUILD_DOCS=OFF
+        -D BUILD_WITH_DEBUG_INFO=OFF
+        -D BUILD_EXAMPLES=OFF
+        -D BUILD_TESTS=OFF
+        -D BUILD_PERF_TESTS=OFF
+        -D BUILD_JAVA=OFF
+        -D BUILD_TIFF=OFF
+        -D BUILD_WEBP=ON
+        -D BUILD_IPP_IW=OFF
+        -D BUILD_ITT=OFF
+        -D BUILD_opencv_apps=OFF
+        -D BUILD_opencv_calib3d=OFF
+        -D BUILD_opencv_datasets=OFF
+        -D BUILD_opencv_dnn=OFF 
+        -D BUILD_opencv_features2d=OFF
+        -D BUILD_opencv_flann=OFF
+        -D BUILD_opencv_freetype=OFF
+        -D BUILD_opencv_gapi=OFF
+        -D BUILD_opencv_highgui=ON
+        -D BUILD_opencv_java_bindings_generator=OFF
+        -D BUILD_opencv_js=OFF
+        -D BUILD_opencv_js_bindings_generator=OFF
+        -D BUILD_opencv_ml=OFF
+        -D BUILD_opencv_objdetect=OFF
+        -D BUILD_opencv_objc_bindings_generator=OFF
+        -D BUILD_opencv_photo=OFF
+        -D BUILD_opencv_python_bindings_generator=ON
+        -D BUILD_opencv_python_tests=ON
+        -D BUILD_opencv_shape=OFF
+        -D BUILD_opencv_stitching=OFF
+        -D BUILD_opencv_ts=OFF
+        -D BUILD_opencv_video=OFF
+        -D BUILD_opencv_videoio=OFF
+        -D BUILD_opencv_videostab=OFF
+        -D BUILD_opencv_world=OFF
+        -D WITH_MSMF=OFF
+        -D WITH_MSMF_DXVA=OFF
+        -D WITH_QT=OFF
+        -D WITH_FREETYPE=OFF
+        -D WITH_TESSERACT=OFF
+        -D WITH_CUDA=OFF
+        -D WITH_DIRECTX=OFF
+        -D WITH_IPP=OFF
+        -D WITH_ITT=OFF
+        -D WITH_VTK=OFF
+        -D WITH_JASPER=OFF
+        -D WITH_OPENCL=OFF
+        -D WITH_OPENCLAMDBLAS=OFF
+        -D WITH_OPENCLAMDFFT=OFF
+        -D WITH_OPENCL_D3D11_NV=OFF
+        -D WITH_QUIRC=OFF
+        -D WITH_ADE=OFF
+        -D WITH_1394=OFF
+        -D WITH_FFMPEG=OFF
+        -D WITH_WEBP=ON
+        -D WITH_TIFF=OFF
+        -D WITH_PNG=ON
+        -D WITH_OPENEXR=OFF
+        -D WITH_PROTOBUF=OFF
+        -D WITH_GSTREAMER=OFF
+        -D WITH_IMGCODEC_SUNRASTER=OFF
+      EXTRA_CONFIGURE: ${{ matrix.EXTRA_CONFIGURE }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: opencv/opencv
+          path: ${{ env.SRC }}
+
+      - name: Configure
+        run: |
+          mkdir ${{ env.BUILD }}
+          cd ${{ env.BUILD }}
+          cmake ${{ env.SRC }} ${{ env.CONFIGURE }} ${{ env.EXTRA_CONFIGURE }}
+
+      - name: List build options
+        working-directory: ${{ env.BUILD }}
+        run: |
+          cmake -LA ${{ env.SRC }}
+
+      - name: Build
+        working-directory: ${{ env.BUILD }}
+        run: |
+          cmake --build . --target install --config Release
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-${{ env.VERSION }}-${{ matrix.name }}
+          path: ${{ env.BUILD }}/install
