@@ -100,7 +100,7 @@ jobs:
         -D WITH_EIGEN=ON
         -D WITH_IMGCODEC_SUNRASTER=OFF
         -D OPENCV_FFMPEG_USE_FIND_PACKAGE=ON
-        -D EIGEN_INCLUDE_PATH=${{ github.workspace }}/eigen-3.4.0/Eigen/
+        -D EIGEN_INCLUDE_PATH=D:/a/buildcv/buildcv/eigen-3.4.0
         -D FFMPEG_DIR=${{ github.workspace }}/ffmpeg
         -D OPENCV_EXTRA_MODULES_PATH=${{ github.workspace }}/opencv_contrib/modules
       EXTRA_CONFIGURE: ${{ matrix.EXTRA_CONFIGURE }}
