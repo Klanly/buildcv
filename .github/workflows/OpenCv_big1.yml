@@ -31,7 +31,7 @@ jobs:
         -D ENABLE_CXX11=1
         -D INSTALL_C_EXAMPLES=OFF
         -D INSTALL_PYTHON_EXAMPLES=ON
-        -D OPENCV_ENABLE_NONFREE=OFF
+        -D OPENCV_ENABLE_NONFREE=ON
         -D BUILD_ANDROID_PROJECTS=OFF
         -D BUILD_ANDROID_EXAMPLES=OFF
         -D BUILD_DOCS=OFF
@@ -100,7 +100,7 @@ jobs:
         -D WITH_IMGCODEC_SUNRASTER=OFF
         -D OPENCV_FFMPEG_USE_FIND_PACKAGE=ON
         -D FFMPEG_DIR=${{ github.workspace }}/ffmpeg
-        -D DOPENCV_EXTRA_MODULES_PATH
+        -D DOPENCV_EXTRA_MODULES_PATH=${{ github.workspace }}/opencv_contrib/modules
       EXTRA_CONFIGURE: ${{ matrix.EXTRA_CONFIGURE }}
 
     steps:
@@ -111,6 +111,7 @@ jobs:
 
       - name: Configure
         run: |
+          git clone https://github.com/opencv/opencv_contrib.git ${{ github.workspace }}/opencv_contrib
           Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full-shared.7z -OutFile ffm.7z
           7z x -o${{ github.workspace }}/ffmpeg ffm.7z
           pip install numpy
