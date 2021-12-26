@@ -97,8 +97,10 @@ jobs:
         -D WITH_OPENEXR=OFF
         -D WITH_PROTOBUF=OFF
         -D WITH_GSTREAMER=OFF
+        -D WITH_EIGEN=ON
         -D WITH_IMGCODEC_SUNRASTER=OFF
         -D OPENCV_FFMPEG_USE_FIND_PACKAGE=ON
+        -D EIGEN_INCLUDE_PATH=${{ github.workspace }}/eigen-3.4.0/Eigen/
         -D FFMPEG_DIR=${{ github.workspace }}/ffmpeg
         -D OPENCV_EXTRA_MODULES_PATH=${{ github.workspace }}/opencv_contrib/modules
       EXTRA_CONFIGURE: ${{ matrix.EXTRA_CONFIGURE }}
@@ -111,9 +113,12 @@ jobs:
 
       - name: Configure
         run: |
+          
           git clone https://github.com/opencv/opencv_contrib.git ${{ github.workspace }}/opencv_contrib
           Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full-shared.7z -OutFile ffm.7z
+          Invoke-WebRequest -Uri https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip -OutFile egn.zip
           7z x -o${{ github.workspace }}/ffmpeg ffm.7z
+          7z x -o${{ github.workspace }} egn.zip
           pip install numpy
           mkdir ${{ env.BUILD }}
           cd ${{ env.BUILD }}
