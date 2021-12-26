@@ -122,11 +122,11 @@ jobs:
         working-directory: ${{ env.BUILD }}
         run: |
           cmake --build . --target install --config Release
+          7z a ${{ env.BUILD }}/install/py.7z C:/hostedtoolcache/windows/Python/3.7.9/x64/Lib/site-packages/cv2
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: ${{ github.job }}-${{ env.VERSION }}-${{ matrix.name }}
-          path: |
-            ${{ env.BUILD }}/install
-            C:/hostedtoolcache/windows/Python/3.7.9/x64/Lib/site-packages/cv2
+          path: ${{ env.BUILD }}/install
+            
