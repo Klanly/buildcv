@@ -72,13 +72,13 @@ jobs:
         -D BUILD_opencv_videoio=ON
         -D BUILD_opencv_videostab=OFF
         -D BUILD_opencv_world=OFF
-        -D WITH_MSMF=OFF
-        -D WITH_MSMF_DXVA=OFF
+        -D WITH_MSMF=ON
+        -D WITH_MSMF_DXVA=ON
         -D WITH_QT=OFF
         -D WITH_FREETYPE=OFF
         -D WITH_TESSERACT=OFF
         -D WITH_CUDA=OFF
-        -D WITH_DIRECTX=OFF
+        -D WITH_DIRECTX=ON
         -D WITH_IPP=OFF
         -D WITH_ITT=OFF
         -D WITH_VTK=OFF
