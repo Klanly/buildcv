@@ -100,7 +100,7 @@ jobs:
         -D WITH_IMGCODEC_SUNRASTER=OFF
         -D OPENCV_FFMPEG_USE_FIND_PACKAGE=ON
         -D FFMPEG_DIR=${{ github.workspace }}/ffmpeg
-        -D DOPENCV_EXTRA_MODULES_PATH=${{ github.workspace }}/opencv_contrib/modules
+        -D OPENCV_EXTRA_MODULES_PATH=${{ github.workspace }}/opencv_contrib/modules
       EXTRA_CONFIGURE: ${{ matrix.EXTRA_CONFIGURE }}
 
     steps:
