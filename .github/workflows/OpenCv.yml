@@ -30,7 +30,7 @@ jobs:
         -D BUILD_SHARED_LIBS=ON
         -D ENABLE_CXX11=1
         -D INSTALL_C_EXAMPLES=OFF
-        -D INSTALL_PYTHON_EXAMPLES=OFF
+        -D INSTALL_PYTHON_EXAMPLES=ON
         -D OPENCV_ENABLE_NONFREE=OFF
         -D BUILD_ANDROID_PROJECTS=OFF
         -D BUILD_ANDROID_EXAMPLES=OFF
@@ -44,6 +44,9 @@ jobs:
         -D BUILD_WEBP=ON
         -D BUILD_IPP_IW=OFF
         -D BUILD_ITT=OFF
+        -D BUILD_NEW_PYTHON_SUPPORT=ON
+        -D BUILD_opencv_python3=ON
+        -D HAVE_opencv_python3=ON
         -D BUILD_opencv_apps=OFF
         -D BUILD_opencv_calib3d=OFF
         -D BUILD_opencv_datasets=OFF
@@ -105,6 +108,7 @@ jobs:
 
       - name: Configure
         run: |
+          pip install numpy
           mkdir ${{ env.BUILD }}
           cd ${{ env.BUILD }}
           cmake ${{ env.SRC }} ${{ env.CONFIGURE }} ${{ env.EXTRA_CONFIGURE }}
