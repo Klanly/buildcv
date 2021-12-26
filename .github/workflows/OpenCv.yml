@@ -68,8 +68,8 @@ jobs:
         -D BUILD_opencv_shape=OFF
         -D BUILD_opencv_stitching=OFF
         -D BUILD_opencv_ts=OFF
-        -D BUILD_opencv_video=OFF
-        -D BUILD_opencv_videoio=OFF
+        -D BUILD_opencv_video=ON
+        -D BUILD_opencv_videoio=ON
         -D BUILD_opencv_videostab=OFF
         -D BUILD_opencv_world=OFF
         -D WITH_MSMF=OFF
@@ -90,7 +90,7 @@ jobs:
         -D WITH_QUIRC=OFF
         -D WITH_ADE=OFF
         -D WITH_1394=OFF
-        -D WITH_FFMPEG=OFF
+        -D WITH_FFMPEG=ON
         -D WITH_WEBP=ON
         -D WITH_TIFF=OFF
         -D WITH_PNG=ON
@@ -98,6 +98,8 @@ jobs:
         -D WITH_PROTOBUF=OFF
         -D WITH_GSTREAMER=OFF
         -D WITH_IMGCODEC_SUNRASTER=OFF
+        -D OPENCV_FFMPEG_USE_FIND_PACKAGE=ON
+        -D FFMPEG_DIR=${{ github.workspace }}/ffmpeg
       EXTRA_CONFIGURE: ${{ matrix.EXTRA_CONFIGURE }}
 
     steps:
@@ -108,6 +110,8 @@ jobs:
 
       - name: Configure
         run: |
+          Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full-shared.7z -OutFile ffm.7z
+          7z x -o${{ github.workspace }}/ffmpeg ffm.7z
           pip install numpy
           mkdir ${{ env.BUILD }}
           cd ${{ env.BUILD }}
