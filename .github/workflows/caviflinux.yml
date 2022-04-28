@@ -1,12 +1,12 @@
 name: Build on Linux
 
 on:
-  push:
-    branches-ignore:
-      - dependabot/**
-  pull_request:
-    branches:
-      - master
+  workflow_dispatch:
+    inputs:
+      opencv-version:
+        description: The version of avif
+        required: true
+        default: 4.5.2
 
 jobs:
   build:
@@ -59,3 +59,8 @@ jobs:
         run: |
           source venv/bin/activate
           env --chdir build ninja
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: caviflinux
+          path: build
