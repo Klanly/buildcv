@@ -1,4 +1,4 @@
-name: Build on Linux
+name: cavif ubu18
 
 on:
   workflow_dispatch:
