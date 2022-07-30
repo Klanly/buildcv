@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       opencv-version:
-        description: The version of OpenCV
+        description: dummy
         required: true
         default: 4.5.2
 
@@ -16,7 +16,7 @@ jobs:
           - name: linux64
             os: ubuntu-18.04
 
-    name: "OpenCV ${{ matrix.name }}"
+    name: "whatevva"
     runs-on: ${{ matrix.os }}
     continue-on-error: true
 
