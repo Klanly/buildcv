@@ -23,7 +23,7 @@ jobs:
     env:
       VERSION: ${{ github.event.inputs.opencv-version }}
       SRC: ${{ github.workspace }}/opencv
-      BUILD: ${{ github.workspace }}/build
+      BUILD: ${{ github.workspace }}
       
       EXTRA_CONFIGURE: ${{ matrix.EXTRA_CONFIGURE }}
 
