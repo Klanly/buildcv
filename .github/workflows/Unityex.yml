@@ -1,0 +1,48 @@
+name: Unityex
+
+on:
+  workflow_dispatch:
+    inputs:
+      opencv-version:
+        description: untia
+        required: true
+        default: 4.5.2
+
+jobs:
+  opencv:
+    strategy:
+      matrix:
+        include:
+          - name: windows_amd64
+            os: windows-latest
+
+    name: "OpenCV ${{ matrix.name }}"
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
+
+    env:
+      VERSION: ${{ github.event.inputs.opencv-version }}
+      SRC: ${{ github.workspace }}/opencv
+      BUILD: ${{ github.workspace }}/build
+      
+      EXTRA_CONFIGURE: ${{ matrix.EXTRA_CONFIGURE }}
+
+    steps:
+      - name: Configure
+        run: |
+          mkdir arcc
+          Invoke-WebRequest -Uri https://download.unity3d.com/download_unity/f5400f52e03f/Windows64EditorInstaller/UnitySetup64-2020.3.28f1.exe -OutFile UnitySetup64.exe
+          UnitySetup64.exe /S /D=C:\Unity
+
+      - name: Build
+        working-directory: ${{ env.BUILD }}
+        run: |
+          
+          7z a ${{ env.BUILD }}/arcc/usav.7z C:\Unity
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-${{ env.VERSION }}-${{ matrix.name }}
+          path: ${{ env.BUILD }}/arcc
+            
