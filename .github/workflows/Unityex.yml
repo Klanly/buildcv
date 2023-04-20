@@ -31,13 +31,12 @@ jobs:
       - name: Configure
         run: |
           mkdir arcc
-          Invoke-WebRequest -Uri https://download.unity3d.com/download_unity/f5400f52e03f/Windows64EditorInstaller/UnitySetup64-2020.3.28f1.exe -OutFile UnitySetup64.exe
-          UnitySetup64.exe /S /D=C:\Unity
+          Invoke-WebRequest -Uri https://download.unity3d.com/download_unity/f5400f52e03f/Windows64EditorInstaller/UnitySetup64-2020.3.28f1.exe -OutFile C:\UnitySetup64.exe
+          C:\UnitySetup64.exe /S /D=C:\Unity
 
       - name: Build
         working-directory: ${{ env.BUILD }}
         run: |
-          
           7z a ${{ env.BUILD }}/arcc/usav.7z C:\Unity
 
       - name: Upload artifacts
