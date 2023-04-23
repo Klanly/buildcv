@@ -1,0 +1,36 @@
+name: dlsmm
+
+on:
+  workflow_dispatch:
+    inputs:
+      opencv-version:
+        description: untia
+        required: true
+        default: 4.5.2
+
+jobs:
+  opencv:
+    strategy:
+      matrix:
+        include:
+          - name: windows_amd64
+            os: windows-latest
+
+    name: "OpenCV ${{ matrix.name }}"
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
+
+    env:
+      VERSION: ${{ github.event.inputs.opencv-version }}
+      SRC: ${{ github.workspace }}/opencv
+      BUILD: ${{ github.workspace }}
+      
+      EXTRA_CONFIGURE: ${{ matrix.EXTRA_CONFIGURE }}
+
+    steps:
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-${{ env.VERSION }}-${{ matrix.name }}
+          path: C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\
+            
