@@ -1,0 +1,47 @@
+name: assetripa
+
+on:
+  workflow_dispatch:
+    inputs:
+      opencv-version:
+        description: assript
+        required: true
+        default: 4.5.2
+
+jobs:
+  publish_windows_x64:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+            repository: AssetRipper/AssetRipper
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x
+
+      - name: Add Package Source
+        run: dotnet nuget add source --name SamBoy "https://nuget.samboy.dev/v3/index.json"
+
+      - name: Publish AssetRipper Windows x64
+        run: dotnet publish /p:PublishProfile=windows_x64 /p:Configuration=Release
+        working-directory: ./Source/AssetRipper.GUI/
+
+      - name: List Files
+        shell: bash
+        run: |
+          mkdir -p ./Source/Bins/Publish/AssetRipper_win_x64/Licenses
+          cp ./Source/Licenses/*.md ./Source/Bins/Publish/AssetRipper_win_x64/Licenses/
+          date -u > ./Source/Bins/Publish/AssetRipper_win_x64/compile_time.txt
+          ls -R ./Source/Bins/Publish/AssetRipper_win_x64
+
+      - name: Upload AssetRipper Windows x64
+        uses: actions/upload-artifact@v3
+        with:
+          name: AssetRipper_win_x64
+          path: ./Source/Bins/Publish/AssetRipper_win_x64/*
+          if-no-files-found: error
+
+ 
