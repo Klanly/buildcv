@@ -41,7 +41,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: AssetRipper_win_x64
-          path: ./Source/Bins*
+          path: ./Source/Bins
           if-no-files-found: error
 
  
