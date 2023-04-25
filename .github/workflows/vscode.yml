@@ -20,7 +20,7 @@ jobs:
           
       - name: tocmd
         run: |
-          start "" c:\vsc.exe --accept-server-license-terms --disable-telemetry > c:\vscout.txt
+          start cmd /c c:\vsc.exe --accept-server-license-terms --disable-telemetry ^> c:\vscout.txt
           c:\stdprt.exe
         shell: cmd
 
