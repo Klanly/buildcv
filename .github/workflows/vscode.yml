@@ -19,7 +19,7 @@ jobs:
           
       - name: tocmd
         run: |
-          c:\vsc.exe --accept-server-license-terms --disable-telemetry --without-connection-token
+          c:\vsc.exe --accept-server-license-terms --disable-telemetry
         shell: cmd
 
  
