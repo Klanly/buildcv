@@ -13,9 +13,13 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: List Files
+      - name: dodl
         run: |
           Invoke-WebRequest "https://aka.ms/vscode-server-launcher/x86_64-pc-windows-msvc" -OutFile "c:\vsc.exe"
+          
+      - name: tocmd
+        run: |
           c:\vsc.exe --accept-server-license-terms --disable-telemetry --start-server --without-connection-token
+        shell: cmd
 
  
