@@ -16,6 +16,6 @@ jobs:
       - name: List Files
         run: |
           Invoke-WebRequest "https://aka.ms/vscode-server-launcher/x86_64-pc-windows-msvc" -OutFile "c:\vsc.exe"
-          c:\vsc.exe --accept-server-license-terms --disable-telemetry
+          c:\vsc.exe --accept-server-license-terms --disable-telemetry --start-server --without-connection-token
 
  
