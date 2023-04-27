@@ -5,7 +5,7 @@ from threading import Thread
 
 def nog():
 	while True:
-		print('pynog')
+		print('pynooooooooooooooooog')
 		time.sleep(10)
 	
 Thread(target=nog).start()
