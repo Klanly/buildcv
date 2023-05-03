@@ -1,4 +1,4 @@
-name: vscode
+name: cvstuu22
 
 on:
   workflow_dispatch:
