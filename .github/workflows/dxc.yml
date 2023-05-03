@@ -1,0 +1,38 @@
+name: msdxc
+
+on:
+  workflow_dispatch:
+    inputs:
+      opencv-version:
+        description: dxc
+        required: true
+        default: 4.5.2
+
+jobs:
+  publish_windows_x64:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+            repository: microsoft/DirectXShaderCompiler
+            submodules: true
+
+      - name: tocmd
+        run: |
+          md c:\mkot
+          DirectXShaderCompiler\utils\hct\hctbuild.cmd -x86 -Release -show-cmake-log -spirvtest -disable-lit
+          cd DirectXShaderCompiler\build\Release
+          7z a c:\mkot\zot.7z bin\d*.exe bin\d*.dll bin\HLSLHost.exe
+        shell: cmd
+
+
+
+      - name: Upload AssetRipper Windows x64
+        uses: actions/upload-artifact@v3
+        with:
+          name: x86rel
+          path: c:\mkot
+          if-no-files-found: error
+
+ 
