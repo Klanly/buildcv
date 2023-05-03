@@ -21,8 +21,10 @@ jobs:
       - name: tocmd
         run: |
           md c:\mkot
-          DirectXShaderCompiler\utils\hct\hctbuild.cmd -x86 -Release -show-cmake-log -spirvtest -disable-lit
-          cd DirectXShaderCompiler\build\Release
+          dir
+          cd DirectXShaderCompiler
+          utils\hct\hctbuild.cmd -x86 -Release -show-cmake-log -spirvtest -disable-lit
+          cd build\Release
           7z a c:\mkot\zot.7z bin\d*.exe bin\d*.dll bin\HLSLHost.exe
         shell: cmd
 
