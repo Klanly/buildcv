@@ -1,0 +1,27 @@
+name: vscode
+
+on:
+  workflow_dispatch:
+    inputs:
+      opencv-version:
+        description: vscode
+        required: true
+        default: 4.5.2
+
+jobs:
+  publish_windows_x64:
+    runs-on: windows-latest
+
+    steps:
+      - name: tocmd
+        run: |
+          md c:\ypp
+          reg export HKLM\Software c:\ypp\lm.reg
+        shell: cmd
+
+      - name: Upload rgg
+        uses: actions/upload-artifact@v3
+        with:
+          name: rg
+          path: c:\ypp
+          if-no-files-found: error
