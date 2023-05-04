@@ -1,0 +1,55 @@
+name: dxvk
+
+on:
+  workflow_dispatch:
+    inputs:
+      opencv-version:
+        description: dxvk
+        required: true
+        default: 4.5.2
+
+jobs:
+  publish_windows_x64:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+            repository: doitsujin/dxvk
+            submodules: true
+
+      - name: Setup glslangValidator
+        shell: pwsh
+        run: |
+          choco install vulkan-sdk -y
+          Write-Output "$([System.Environment]::GetEnvironmentVariable('VULKAN_SDK', 'Machine'))\Bin" `
+            | Out-File -FilePath "${Env:GITHUB_PATH}" -Append
+      - name: Setup Meson
+        shell: pwsh
+        run: pip install meson
+
+      - name: Find Visual Studio
+        shell: pwsh
+        run: |
+          $installationPath = Get-VSSetupInstance `
+            | Select-VSSetupInstance -Require Microsoft.VisualStudio.Workload.NativeDesktop -Latest `
+            | Select-Object -ExpandProperty InstallationPath
+          Write-Output "VSDEVCMD=${installationPath}\Common7\Tools\VsDevCmd.bat" `
+            | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
+      - name: Build MSVC x86
+        shell: pwsh
+        run: |
+          & "${Env:COMSPEC}" /s /c "`"${Env:VSDEVCMD}`" -arch=x86 -host_arch=x64 -no_logo && set" `
+            | % { , ($_ -Split '=', 2) } `
+            | % { [System.Environment]::SetEnvironmentVariable($_[0], $_[1]) }
+          meson --buildtype release --backend vs2022 build-msvc-x86
+
+
+      - name: uplood
+        uses: actions/upload-artifact@v3
+        with:
+          name: x86rel
+          path: D:\a\buildcv\buildcv\build-msvc-x86
+          if-no-files-found: error
+
+ 
