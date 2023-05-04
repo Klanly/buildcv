@@ -22,10 +22,11 @@ jobs:
         run: |
           md c:\mkot
           md build
+          cd build
           dir
-          utils\hct\hctbuild -x86 -Release -show-cmake-log -spirvtest -disable-lit
+          ..\utils\hct\hctbuild -x86 -Release -show-cmake-log -spirvtest -disable-lit
           dir
-          cd build\Release
+          cd Release
           7z a c:\mkot\zot.7z bin\d*.exe bin\d*.dll
         shell: cmd
 
