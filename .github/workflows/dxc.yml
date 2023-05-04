@@ -21,7 +21,7 @@ jobs:
       - name: tocmd
         run: |
           md c:\mkot
-          utils\hct\hctstart -x86 %CD% %CD%\build
+          md build
           dir
           utils\hct\hctbuild -x86 -Release -show-cmake-log -spirvtest -disable-lit
           dir
