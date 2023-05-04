@@ -22,8 +22,10 @@ jobs:
         run: |
           md c:\mkot
           md build
+          set HLSL_SRC_DIR=%cd%
           cd build
           dir
+          set HLSL_BLD_DIR=%cd%
           ..\utils\hct\hctbuild -x86 -Release -show-cmake-log -spirvtest -disable-lit
           dir
           cd Release
