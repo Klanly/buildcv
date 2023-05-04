@@ -43,13 +43,14 @@ jobs:
             | % { , ($_ -Split '=', 2) } `
             | % { [System.Environment]::SetEnvironmentVariable($_[0], $_[1]) }
           meson --buildtype release --backend vs2022 build-msvc-x86
+          msbuild -m build-msvc-x86/dxvk.sln
 
 
       - name: uplood
         uses: actions/upload-artifact@v3
         with:
           name: x86rel
-          path: D:\a\buildcv\buildcv\build-msvc-x86
+          path: D:\a\buildcv\buildcv
           if-no-files-found: error
 
  
