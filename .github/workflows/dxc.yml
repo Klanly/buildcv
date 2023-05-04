@@ -27,18 +27,19 @@ jobs:
           dir
           set HLSL_BLD_DIR=%cd%
           ..\utils\hct\hctbuild -x86 -Release -show-cmake-log -spirvtest -disable-lit
-          dir
-          cd Release
-          7z a c:\mkot\zot.7z bin\d*.exe bin\d*.dll
         shell: cmd
-
+      
+      - name: delpdb
+        run: |
+            del D:\a\buildcv\buildcv\build\Release\bin\*.pdb
+        shell: cmd
 
 
       - name: Upload AssetRipper Windows x64
         uses: actions/upload-artifact@v3
         with:
           name: x86rel
-          path: c:\mkot
+          path: D:\a\buildcv\buildcv\build\Release\bin
           if-no-files-found: error
 
  
