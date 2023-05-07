@@ -20,7 +20,7 @@ jobs:
 
       - name: tocmd
         run: |
-          cmake -A x86 -S . -B build/VK -DGFX_API=VK
+          cmake -A x86 -DCMAKE_GENERATOR_PLATFORM=WIN32 -DCMAKE_BUILD_TYPE=Release -S . -B build/VK -DGFX_API=VK
           cmake --build build/VK --config Release --parallel 4 -- /p:CL_MPcount=16
           
         
