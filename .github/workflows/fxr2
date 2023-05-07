@@ -1,0 +1,36 @@
+name: fxr2
+
+on:
+  workflow_dispatch:
+    inputs:
+      opencv-version:
+        description: fxr2
+        required: true
+        default: 4.5.2
+
+jobs:
+  publish_windows_x64:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+            repository: GPUOpen-Effects/FidelityFX-FSR2
+            submodules: true
+
+      - name: tocmd
+        run: |
+          cmake -A x86 -S . -B build/VK -DGFX_API=VK
+          cmake --build build/VK --config Release --parallel 4 -- /p:CL_MPcount=16
+          
+        
+     
+
+      - name: Upload Asset
+        uses: actions/upload-artifact@v3
+        with:
+          name: x86rel
+          path: D:\a\buildcv\buildcv\bin
+          if-no-files-found: error
+
+ 
