@@ -1,0 +1,29 @@
+name: llvm
+
+on:
+  workflow_dispatch:
+    inputs:
+      opencv-version:
+        description: llvm
+        required: true
+        default: 4.5.2
+
+jobs:
+  publish_windows_x64:
+    runs-on: windows-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v3
+        with:
+            repository: Klanly/buildcv
+      - uses: Trass3r/setup-cpp@master
+      - run: ./llvm.ps1
+
+      - name: Upload Asset
+        uses: actions/upload-artifact@v3
+        with:
+          name: x86rel
+          path: c:\llvmlib
+          if-no-files-found: error
+
+ 
