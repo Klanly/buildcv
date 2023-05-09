@@ -129,7 +129,7 @@ function Build-LLVM(){
 
     cmake "./~build/llvm_git/llvm" `
         -B"./~build/llvm_build" `
-        -GNinja -DCLANG_CL=1 `
+        -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_BUILD_TYPE=Release -DLLVM_USE_CRT_RELEASE=MD -G"Ninja" `
         -DMSVC_RUNTIME_LIBRARY=MultiThreadedDLL `
         -DCMAKE_POLICY_DEFAULT_CMP0091=NEW `
         -DCMAKE_BUILD_TYPE="Release" `
