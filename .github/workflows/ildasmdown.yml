@@ -20,17 +20,19 @@ jobs:
     runs-on: ${{ matrix.os }}
     continue-on-error: true
 
-    env:
-      VERSION: ${{ github.event.inputs.opencv-version }}
-      SRC: ${{ github.workspace }}/opencv
-      BUILD: ${{ github.workspace }}
-      
-      EXTRA_CONFIGURE: ${{ matrix.EXTRA_CONFIGURE }}
+    
 
     steps:
+      - name: delpdb
+        run: |
+            c:\
+            cd C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC
+            dir
+        shell: cmd
+        
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.job }}-${{ env.VERSION }}-${{ matrix.name }}
+          name: sutaz.zip
           path: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.32.31326\lib\x64
             
