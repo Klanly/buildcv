@@ -129,9 +129,7 @@ function Build-LLVM(){
 
     cmake "./~build/llvm_git/llvm" `
         -B"./~build/llvm_build" `
-        -GNinja `
-        -G "Visual Studio 17 2022" ` 
-        -T ClangCL `
+        -GNinja -DCLANG_CL=1 `
         -DMSVC_RUNTIME_LIBRARY=MultiThreadedDLL `
         -DCMAKE_POLICY_DEFAULT_CMP0091=NEW `
         -DCMAKE_BUILD_TYPE="Release" `
