@@ -43,12 +43,10 @@ jobs:
           source-url: https://nuget.pkg.github.com/lifting-bits/index.json
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Read vcpkg Info
         id: vcpkg_info
         shell: bash
         run: |
-          wget -O "D:\a\buildcv\buildcv\overlays2.txt" "https://raw.githubusercontent.com/Klanly/buildcv/main/fixes/overlays2.txt"
           { read -r vcpkg_repo_url && read -r vcpkg_commit; } < ./vcpkg_info.txt || exit 1
           echo "repo_url=${vcpkg_repo_url}" >> ${GITHUB_OUTPUT}
           echo "commit=${vcpkg_commit}" >> ${GITHUB_OUTPUT}
@@ -69,7 +67,11 @@ jobs:
         env:
           VCPKG_DISABLE_METRICS: 1
 
-        # Omit this step if using manifests
+      - name: downloadshit
+        id: downloadshit
+        run: |
+          Invoke-WebRequest "https://raw.githubusercontent.com/Klanly/buildcv/main/fixes/overlays2.txt" -OutFile "D:\a\buildcv\buildcv\overlays2.txt"
+
       - name: 'vcpkg install dependencies'
         env:
           VCPKG_DISABLE_METRICS: 1
