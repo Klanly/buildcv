@@ -48,7 +48,7 @@ jobs:
         id: vcpkg_info
         shell: bash
         run: |
-          Invoke-WebRequest "https://raw.githubusercontent.com/Klanly/buildcv/main/fixes/overlays2.txt" -OutFile "D:\a\buildcv\buildcv\overlays2.txt"
+          wget -O "D:\a\buildcv\buildcv\overlays2.txt" "https://raw.githubusercontent.com/Klanly/buildcv/main/fixes/overlays2.txt"
           { read -r vcpkg_repo_url && read -r vcpkg_commit; } < ./vcpkg_info.txt || exit 1
           echo "repo_url=${vcpkg_repo_url}" >> ${GITHUB_OUTPUT}
           echo "commit=${vcpkg_commit}" >> ${GITHUB_OUTPUT}
