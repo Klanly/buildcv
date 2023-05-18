@@ -1,0 +1,163 @@
+name: remill
+
+env:
+  # "Source" is set in the setup-dotnet action
+  VCPKG_BINARY_SOURCES: 'clear;nuget,Source,readwrite;nugettimeout,3601'
+  TRIPLET: 'x64-windows-static-md-rel'
+  VCPKG_DEFAULT_HOST_TRIPLET: 'x64-windows-static-md-rel'
+
+on:
+  workflow_dispatch:
+    inputs:
+      opencv-version:
+        description: remill
+        required: true
+        default: 4.5.2
+
+
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        llvm: ['llvm-15','llvm-16']
+
+    runs-on: windows-latest
+
+    env:
+      ARTIFACT_NAME: vcpkg_windows-vs2019_${{ matrix.llvm }}_amd64
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: lifting-bits/cxx-common
+          submodules: true
+
+
+
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '3.1.x' # SDK Version to use.
+          # Sets as "Source"
+          source-url: https://nuget.pkg.github.com/lifting-bits/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read vcpkg Info
+        id: vcpkg_info
+        shell: bash
+        run: |
+          { read -r vcpkg_repo_url && read -r vcpkg_commit; } < ./vcpkg_info.txt || exit 1
+          echo "repo_url=${vcpkg_repo_url}" >> ${GITHUB_OUTPUT}
+          echo "commit=${vcpkg_commit}" >> ${GITHUB_OUTPUT}
+
+        # Setup Visual Studio Dev Environment (x64, default version/toolset)
+      - uses: ilammy/msvc-dev-cmd@v1.12.1
+
+      - name: Clear prior vcpkg directory
+        run: |
+          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "${{ github.workspace }}\vcpkg"
+          Add-Content -Path $env:GITHUB_ENV -Encoding UTF8 -Value 'VCPKG_ROOT=${{ github.workspace }}\vcpkg'
+
+      - name: 'Checkout and Bootstrap vcpkg'
+        run: |
+          git clone ${{ steps.vcpkg_info.outputs.repo_url }} "${env:VCPKG_ROOT}"
+          git -C "${env:VCPKG_ROOT}" checkout ${{ steps.vcpkg_info.outputs.commit }}
+          & "${env:VCPKG_ROOT}\bootstrap-vcpkg.bat"
+        env:
+          VCPKG_DISABLE_METRICS: 1
+
+        # Omit this step if using manifests
+      - name: 'vcpkg install dependencies'
+        env:
+          VCPKG_DISABLE_METRICS: 1
+        run: |
+          # Setup NuGet authentication
+          & "$(& "${env:VCPKG_ROOT}\vcpkg.exe" fetch nuget | select -last 1)" setapikey `
+            -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" `
+            "${{ secrets.GITHUB_TOKEN }}"
+
+          & "${env:VCPKG_ROOT}\vcpkg.exe" install `
+            --triplet "${env:TRIPLET}" `
+            --debug `
+            ${{ matrix.llvm }} `
+            "@overlays.txt" `
+            "@dependencies.txt"
+
+
+
+      - name: 'Test rellic build'
+        if: ${{ matrix.llvm == 'llvm-15' }}
+        run: |
+          cd rellic
+          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue .\build
+          New-Item -Path .\build -ItemType Directory
+          cd build
+          cmake -T ClangCl `
+            -DCMAKE_VERBOSE_MAKEFILE=ON `
+            -DVCPKG_ROOT="${env:VCPKG_ROOT}" `
+            -DCMAKE_INSTALL_PREFIX="$(pwd)\install" `
+            ..
+          cmake --build . --config Release -j
+          cmake --build . --config Release --target install
+
+          # TODO Testing on Windows
+          # python ../scripts/roundtrip.py ( Get-ChildItem tools | Where-Object {$_.name -match "rellic-decomp.exe"} ) ..\tests\tools\decomp "${env:VCPKG_ROOT}\installed\${env:TRIPLET}\tools\${{ matrix.llvm }}\clang.exe"
+
+      - name: 'Test remill build'
+        run: |
+          cd remill
+          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue .\build
+          New-Item -Path .\build -ItemType Directory
+          cd build
+          cmake -T ClangCl `
+            -DCMAKE_VERBOSE_MAKEFILE=ON `
+            -DVCPKG_ROOT="${env:VCPKG_ROOT}" `
+            -DCMAKE_INSTALL_PREFIX="$(pwd)\install" `
+            ..
+          cmake --build . --config Release -j
+          cmake --build . --config Release --target install
+
+         
+          # TODO Testing with CMake on Windows
+          # cmake --build . --target test_dependencies
+          # env CTEST_OUTPUT_ON_FAILURE=1 cmake --build . --target test || true
+
+      - name: 'Anvill build'
+        if: ${{ matrix.llvm == 'llvm-15' }}
+        run: |
+          cd anvill
+          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue .\build
+          New-Item -Path .\build -ItemType Directory
+          cd build
+          cmake -T ClangCl `
+            -DCMAKE_VERBOSE_MAKEFILE=ON `
+            -DCMAKE_INSTALL_PREFIX="$(pwd)\install" `
+            -DVCPKG_ROOT="${env:VCPKG_ROOT}" `
+            -DANVILL_ENABLE_INSTALL_TARGET=ON `
+            -DANVILL_ENABLE_PYTHON3_LIBS=OFF `
+            -Dremill_DIR="$(pwd)\..\..\remill\build\install\lib\cmake\remill" `
+            ..
+          cmake --build . --config Release -j
+          cmake --build . --config Release --target install
+          
+          
+      - name: Upload Assetrm
+        uses: actions/upload-artifact@v3
+        with:
+          name: remill
+          path: D:\a\buildcv\buildcv\remill\install\bin
+          if-no-files-found: error
+      - name: Upload Assetav
+        uses: actions/upload-artifact@v3
+        with:
+          name: anvill
+          path: D:\a\buildcv\buildcv\anvill\install\bin
+          if-no-files-found: error
+      - name: Upload rellic
+        uses: actions/upload-artifact@v3
+        with:
+          name: rellic
+          path: D:\a\buildcv\buildcv\rellic\install\bin
+          if-no-files-found: error
