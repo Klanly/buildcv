@@ -29,7 +29,7 @@ jobs:
           cmd /c gclient
           cmd /c python scripts/bootstrap.py
           cmd /c gclient sync
-          cmd /c gn gen out/Release --args="is_debug=false target_cpu=\"x64\" angle_enable_gl=false angle_enable_gl_desktop_frontend=true angle_expose_wgl_entry_points=true angle_build_all=false angle_enable_vulkan=true angle_enable_d3d11=false angle_enable_d3d9=false angle_enable_null=false"
+          cmd /c gn gen out/Release --args="is_debug=false target_cpu=\"x64\" angle_enable_gl_desktop_frontend=true angle_expose_wgl_entry_points=true angle_build_all=false angle_enable_vulkan=true angle_enable_d3d11=false angle_enable_d3d9=false angle_enable_null=false"
 
           cmd /c autoninja -C out/Release
       - name: Pack
