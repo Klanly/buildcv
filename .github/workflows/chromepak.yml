@@ -1,0 +1,40 @@
+name: chromepak
+
+on:
+  workflow_dispatch:
+    inputs:
+      opencv-version:
+        description: dxvk
+        required: true
+        default: 4.5.2
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-windows:
+
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+            repository: myfreeer/chrome-pak-customizer
+            ref: 3.x
+            submodules: true
+      - name: Build
+        run: cargo build --verbose
+      - name: Cargo test
+        run: cargo test --verbose --no-fail-fast
+      - name: Build Release
+        run: cargo build --verbose --release
+      - name: Download test files
+        run: PowerShell.exe -ExecutionPolicy Bypass -File ./script/ci-download.ps1
+      - name: Test
+        run: PowerShell.exe -ExecutionPolicy Bypass -File ./script/ci-run.ps1
+      - uses: actions/upload-artifact@v3
+        with:
+          name: windows-artifact
+          path: |
+            target/debug/*.exe
+            target/release/*.exe
