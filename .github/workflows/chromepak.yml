@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       opencv-version:
-        description: dxvk
+        description: chromepak
         required: true
         default: 4.5.2
 
